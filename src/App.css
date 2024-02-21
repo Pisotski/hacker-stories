@@ -40,14 +40,3 @@
 .read-the-docs {
   color: #888;
 } */
-body {
-  width: 100vw;
-}
-
-.top-wrapper {
-  width: 100vw;
-  max-height: 30vh;
-  display:flex;
-  color: red;
-  justify-content: center;
-}
