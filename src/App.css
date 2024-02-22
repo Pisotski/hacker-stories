@@ -40,3 +40,26 @@
 .read-the-docs {
   color: #888;
 } */
+
+body {
+  justify-content: center;
+}
+
+#root {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.technology {
+  margin-bottom: 2em;
+  font-size: larger;
+}
+
+.technology li {
+  font-size: smaller;
+}
