@@ -1,15 +1,25 @@
 import * as React from 'react';
 import './App.css'
 
-const welcome = {
-  title: 'Road to React',
+interface Header {
+  title: string;
+  greeting: string;
+}
+const welcome:Header = {
+  title: 'the Road to React',
   greeting: 'Hello, Friend'
 }
 
-// Go ahead and render the item’s url, author, num_comments, and points as well. 
-// In the special case of the url, use an HTML anchor HTML element (read: <a> tag) that surrounds the title. 
+interface Technology {
+  title: string;
+  url: string;
+  author: string;
+  num_comments: number;
+  points: number;
+  objectID: number;
+}
 
-const list = [
+const list: Technology[]= [
   {
     title: 'React',
     url: 'https://reactjs.org/',
@@ -26,43 +36,36 @@ const list = [
     objectID: 1,
 }, ];
 
-function App() {
-  return (
-    <div className="top-wrapper">
-      <Search />
-      <hr />
-      <List />
-    </div>
-  )
-}
+const App = () => (
+  <div className="top-wrapper">
+    <Search />
+    <hr />
+    <List />
+  </div>
+)
 
-function Search() {
-  return(
-    <div className="search-wrapper">
-      <h1>
-        {welcome.title}: {welcome.greeting}
-      </h1>
-      <label htmlFor="search">Search: </label>
-      <input id="search" type="text" />
-    </div>
-  )
-}
+const Search = () => (
+  <div className="search-wrapper">
+    <h1>
+      {welcome.title}: {welcome.greeting}
+    </h1>
+    <label htmlFor="search">Search: </label>
+    <input id="search" type="text" />
+  </div>
+)
 
-function List() {
-    return (
-      <div>
-        {list.map((item) => {
-          return (
-            <ul className="technology" key={item.objectID}>
-              <a href={item.url}>{item.title}</a>
-              <li>Author: {item.author}</li>
-              <li>Comments: {item.num_comments}</li>
-              <li>Points: {item.points}</li>
-            </ul>
-          )
-        })}
-      </div>
-    )
-}
+const List = () => (
+  <div>
+    {list.map((item:Technology) => (
+        <ul className="technology" key={item.objectID}>
+          <a href={item.url}>{item.title}</a>
+          <li>Author: {item.author}</li>
+          <li>Comments: {item.num_comments}</li>
+          <li>Points: {item.points}</li>
+        </ul>
+      )
+    )}
+  </div>
+)
 
 export default App
