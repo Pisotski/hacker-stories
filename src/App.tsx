@@ -2,8 +2,8 @@ import * as React from 'react';
 import './App.css'
 
 const welcome = {
-  title: 'Useful Game',
-  greeting: 'wasa-wasa'
+  title: 'Road to React',
+  greeting: 'Hello, Friend'
 }
 
 // Go ahead and render the item’s url, author, num_comments, and points as well. 
@@ -29,12 +29,27 @@ const list = [
 function App() {
   return (
     <div className="top-wrapper">
+      <Search />
+      <hr />
+      <List />
+    </div>
+  )
+}
+
+function Search() {
+  return(
+    <div className="search-wrapper">
       <h1>
         {welcome.title}: {welcome.greeting}
       </h1>
       <label htmlFor="search">Search: </label>
       <input id="search" type="text" />
-      <hr />
+    </div>
+  )
+}
+
+function List() {
+    return (
       <div>
         {list.map((item) => {
           return (
@@ -47,8 +62,7 @@ function App() {
           )
         })}
       </div>
-    </div>
-  )
+    )
 }
 
 export default App
