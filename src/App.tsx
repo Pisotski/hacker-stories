@@ -1,16 +1,11 @@
-import { FC } from "react";
+import { FC, useState, ChangeEvent } from "react";
 import "./App.css";
 
 interface Header {
 	title: string;
 	greeting: string;
 }
-const welcome: Header = {
-	title: "the Road to React",
-	greeting: "Hello, Friend",
-};
 
-// where to define TS top or bottom? or separately?
 interface Story {
 	title: string;
 	url: string;
@@ -20,16 +15,20 @@ interface Story {
 	objectID: number;
 }
 
+type ItemProps = Omit<Story, "objectID">;
+
 interface ListProps {
 	list: Story[];
 }
-// Variable names:
-// the road to react app is calling for
-// precise naming of variables naming: const stories:
-// and for generic names in props: <List list={stories} />
-// it is always a struggle for me to choose <List stories={stories} /> or even <Story stories={stories} />
-// for this particular example List is better cause it's more reusable.
-// Is <Story stories={stories} /> more common use case?
+
+interface SearchProps {
+	onSearch: (e: ChangeEvent<HTMLInputElement>) => void;
+	search: string;
+}
+const welcome: Header = {
+	title: "the Road to React",
+	greeting: "Hello, Friend",
+};
 
 const App: FC = () => {
 	const stories: Story[] = [
@@ -50,65 +49,65 @@ const App: FC = () => {
 			objectID: 1,
 		},
 	];
+
+	const [searchTerm, setSearchTerm] = useState("");
+
+	const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
+		setSearchTerm(e.target.value);
+	};
+
+	const searchedStories = stories.filter((story) =>
+		story.title.toLowerCase().includes(searchTerm.toLowerCase())
+	);
+
 	return (
 		<div className="top-wrapper">
-			<Search />
+			<Search search={searchTerm} onSearch={handleSearch} />
 			<hr />
-			<List list={stories} />
+			<List list={searchedStories} />
 			<PreventTouchEnd />
 		</div>
 	);
 };
 
-const Search: FC = () => {
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		console.log(e);
-		console.log(e.target.value);
-	};
-	const verifyBlurLog = () => {
-		console.log(`input focused, mouse outside of the input field`);
-	};
-
+const Search: FC<SearchProps> = ({ search, onSearch }) => {
 	return (
 		<div className="search-wrapper">
 			<h1>
 				{welcome.title}: {welcome.greeting}
 			</h1>
 			<label htmlFor="search">Search: </label>
-			<input
-				id="search"
-				type="text"
-				onChange={handleChange}
-				onBlur={verifyBlurLog}
-			/>
+			<input id="search" type="text" value={search} onChange={onSearch} />
+			<p>{search}</p>
 		</div>
 	);
 };
 
 const List: FC<ListProps> = ({ list }) => (
 	<div>
-		{list.map((item: Story) => (
-			<ul className="technology" key={item.objectID}>
-				<a href={item.url}>{item.title}</a>
-				<li>Author: {item.author}</li>
-				<li>Comments: {item.num_comments}</li>
-				<li>Points: {item.points}</li>
-			</ul>
+		{list.map(({ objectID, ...item }) => (
+			<Item key={objectID} {...item} />
 		))}
 	</div>
 );
 
+const Item: FC<ItemProps> = ({ url, title, author, num_comments, points }) => (
+	<ul className="technology">
+		<a href={url}>{title}</a>
+		<li>Author: {author}</li>
+		<li>Comments: {num_comments}</li>
+		<li>Points: {points}</li>
+	</ul>
+);
+
+// How to handle touch event and click event without one interrupting another
 const PreventTouchEnd: FC = () => {
-	// talk with mentor
-	// page 53
-	// event bubbling https://www.robinwieruch.de/react-event-bubbling-capturing/
-	// recommended solution https://stackoverflow.com/questions/45612379/react-onclick-and-ontouchstart-fired-simultaneously/56970849#56970849
 	const handleClick = (): void => {
-		alert("click");
+		console.log("click");
 	};
 
 	const handleTouchEnd = (e: React.TouchEvent<HTMLButtonElement>): void => {
-		alert("touchend");
+		console.log("touchend");
 
 		e.preventDefault();
 	};
@@ -120,4 +119,4 @@ const PreventTouchEnd: FC = () => {
 	);
 };
 
-export default App;
+export { App };
