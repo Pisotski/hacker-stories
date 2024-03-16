@@ -84,6 +84,10 @@ const App: FC = () => {
 			<hr />
 			<List list={searchedStories} />
 			<PreventTouchEnd />
+			<div id="practice-reusable-components-p96">
+				<Button initialValue="Like" type="button" />
+				<RadioButtonGroup type="radio" name="selected-answer" />
+			</div>
 		</div>
 	);
 };
@@ -100,7 +104,7 @@ const InputWithLabel: FC<inputWithLabelProps> = ({
 			<h1>
 				{welcome.title}: {welcome.greeting}
 			</h1>
-			<label htmlFor={label}>Search: </label>
+			<label htmlFor={id}>{label}</label>
 			<input id={id} type={type} value={value} onChange={onInputChange} />
 			<p>{value}</p>
 		</>
@@ -142,5 +146,111 @@ const PreventTouchEnd: FC = () => {
 		</button>
 	);
 };
+
+// ************************
+// P96: REUSABLE COMPONENTS
+// ************************
+
+type button = {
+	initialValue: string;
+	type?: "submit" | "reset" | "button";
+};
+// BUTTON
+const Button: FC<button> = ({ initialValue, type }) => {
+	const [toggle, setToggle] = useState(true);
+	const [value, setValue] = useState(initialValue);
+
+	const buttonEffect = () => {
+		toggle ? setValue("Like") : setValue("Dislike");
+	};
+
+	useEffect(buttonEffect, [toggle]);
+
+	const handleClick = () => {
+		setToggle(!toggle);
+		console.log(toggle, value);
+	};
+
+	return (
+		<button type={type} value={value} onClick={handleClick}>
+			{value}
+		</button>
+	);
+};
+// RADIO BUTTON
+type radioButtonGroup = {
+	type: "button" | "checkbox" | "radio";
+	name: string;
+};
+const RadioButtonGroup: FC<radioButtonGroup> = ({ type, name }) => {
+	const [selected, setSelected] = useState("");
+
+	const handleSelect = (selectedInput: string) => {
+		setSelected(selectedInput);
+	};
+
+	return (
+		<>
+			<RadioButton
+				type={type}
+				id="answer-1"
+				name={name}
+				value="Batman"
+				onSelect={handleSelect}
+			/>
+			<RadioButton
+				type={type}
+				id="answer-2"
+				name={name}
+				value="Ironman"
+				onSelect={handleSelect}
+			/>
+			<RadioButton
+				type={type}
+				id="answer-3"
+				name={name}
+				value="Invinsibleman"
+				onSelect={handleSelect}
+			/>
+			{selected && <div>FavChar: {selected}</div>}
+		</>
+	);
+};
+
+type radioButton = radioButtonGroup & {
+	id: string;
+	value: string;
+	onSelect: (selectedInput: string) => void;
+};
+
+const RadioButton: FC<radioButton> = ({ type, id, name, value, onSelect }) => {
+	const [select, setSelect] = useState(false);
+	const [selected, setSelected] = useState("");
+
+	const selectValue = () => {
+		if (selected) onSelect(selected);
+	};
+	useEffect(selectValue, [select, selected]);
+
+	const handleSelect = (e: ChangeEvent<HTMLInputElement>) => {
+		setSelected(e.currentTarget.value);
+		setSelect(!select);
+		setSelect(!select);
+	};
+	return (
+		<div className="answer">
+			<input
+				type={type}
+				id={id}
+				name={name}
+				value={value}
+				onChange={handleSelect}
+			/>
+			<label htmlFor={id}> {value} </label>
+		</div>
+	);
+};
+// CHECKBOX
+// DROPDOWN
 
 export { App };

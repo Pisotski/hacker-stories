@@ -63,3 +63,14 @@ body {
 .technology li {
 	font-size: smaller;
 }
+
+#practice-reusable-components-p96 {
+	display: flex;
+	width: 100vw;
+	flex-flow: column;
+	align-items: start;
+}
+.answer {
+	font-size: x-large;
+	color: bisque;
+}
