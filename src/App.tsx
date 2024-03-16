@@ -21,10 +21,14 @@ interface ListProps {
 	list: Story[];
 }
 
-interface SearchProps {
-	onSearch: (e: ChangeEvent<HTMLInputElement>) => void;
-	search: string;
-}
+type inputWithLabelProps = {
+	id: string;
+	label: string;
+	value: string;
+	type?: string;
+	onInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
+};
+
 const welcome: Header = {
 	title: "the Road to React",
 	greeting: "Hello, Friend",
@@ -71,7 +75,12 @@ const App: FC = () => {
 
 	return (
 		<div className="top-wrapper">
-			<Search search={searchTerm} onSearch={handleSearch} />
+			<InputWithLabel
+				id="search"
+				label="Search"
+				value={searchTerm}
+				onInputChange={handleSearch}
+			/>
 			<hr />
 			<List list={searchedStories} />
 			<PreventTouchEnd />
@@ -79,16 +88,22 @@ const App: FC = () => {
 	);
 };
 
-const Search: FC<SearchProps> = ({ search, onSearch }) => {
+const InputWithLabel: FC<inputWithLabelProps> = ({
+	id,
+	label,
+	type = "text",
+	value,
+	onInputChange,
+}) => {
 	return (
-		<div className="search-wrapper">
+		<>
 			<h1>
 				{welcome.title}: {welcome.greeting}
 			</h1>
-			<label htmlFor="search">Search: </label>
-			<input id="search" type="text" value={search} onChange={onSearch} />
-			<p>{search}</p>
-		</div>
+			<label htmlFor={label}>Search: </label>
+			<input id={id} type={type} value={value} onChange={onInputChange} />
+			<p>{value}</p>
+		</>
 	);
 };
 
