@@ -1,4 +1,4 @@
-import { FC, useState, ChangeEvent } from "react";
+import { FC, useState, useEffect, ChangeEvent } from "react";
 import "./App.css";
 
 interface Header {
@@ -30,6 +30,14 @@ const welcome: Header = {
 	greeting: "Hello, Friend",
 };
 
+const userStorageState = (key: string, initialState: string) => {
+	const [value, setValue] = useState(localStorage.getItem(key) ?? initialState);
+	useEffect(() => {
+		localStorage.setItem(key, value);
+	}, [value, key]);
+	return [value, setValue] as const;
+};
+
 const App: FC = () => {
 	const stories: Story[] = [
 		{
@@ -50,10 +58,11 @@ const App: FC = () => {
 		},
 	];
 
-	const [searchTerm, setSearchTerm] = useState("");
+	const [searchTerm, setSearchTerm] = userStorageState("search", "React");
 
 	const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
-		setSearchTerm(e.target.value);
+		const { value } = e.target;
+		setSearchTerm(value);
 	};
 
 	const searchedStories = stories.filter((story) =>
