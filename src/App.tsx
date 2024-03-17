@@ -224,18 +224,18 @@ type radioButton = radioButtonGroup & {
 };
 
 const RadioButton: FC<radioButton> = ({ type, id, name, value, onSelect }) => {
-	const [select, setSelect] = useState(false);
-	const [selected, setSelected] = useState("");
+	const [isChecked, setSelect] = useState(false);
+	const [targetValue, setTargetValue] = useState("");
 
 	const selectValue = () => {
-		if (selected) onSelect(selected);
+		if (targetValue) onSelect(targetValue);
 	};
-	useEffect(selectValue, [select, selected]);
+	useEffect(selectValue, [isChecked, targetValue]);
 
 	const handleSelect = (e: ChangeEvent<HTMLInputElement>) => {
-		setSelected(e.currentTarget.value);
-		setSelect(!select);
-		setSelect(!select);
+		setTargetValue(e.currentTarget.value);
+		setSelect(!isChecked);
+		setSelect(!isChecked);
 	};
 	return (
 		<div className="answer">
