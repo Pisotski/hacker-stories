@@ -1,7 +1,9 @@
 import { FC, useState, useEffect, ChangeEvent } from "react";
 import "./App.css";
-import { data, mockDataCharacter, mockDataCharacterSet } from "./data";
+import { data, mockDataCharacterSet } from "./data";
 import { getRandomIntInclusive } from "./helpers";
+import { RadioButtonGroup } from "./reusable_components/RadioButtonGroup";
+import { Button } from "./reusable_components/Button";
 
 interface Header {
 	title: string;
@@ -86,7 +88,7 @@ const App: FC = () => {
 			<hr />
 			<List list={searchedStories} />
 			<PreventTouchEnd />
-			{data.map((mockDataCharacterSet: mockDataCharacterSet, index) => (
+			{data.map((mockDataCharacterSet, index) => (
 				<div
 					className="practice-reusable-components-p96"
 					key={getRandomIntInclusive(0, 1000)}
@@ -99,6 +101,7 @@ const App: FC = () => {
 					<Button initialValue="Like" type="button" />
 				</div>
 			))}
+			<RadioButtonGroup type="checkbox" data={data[0]} />
 		</div>
 	);
 };
@@ -162,107 +165,7 @@ const PreventTouchEnd: FC = () => {
 // P96: REUSABLE COMPONENTS
 // ************************
 
-type button = {
-	initialValue: string;
-	type?: "submit" | "reset" | "button";
-};
-// BUTTON
-const Button: FC<button> = ({ initialValue, type }) => {
-	const [toggle, setToggle] = useState(true);
-	const [value, setValue] = useState(initialValue);
-
-	const buttonEffect = () => {
-		toggle ? setValue("Like") : setValue("Dislike");
-	};
-
-	useEffect(buttonEffect, [toggle]);
-
-	const handleClick = () => {
-		setToggle(!toggle);
-		console.log(toggle, value);
-	};
-
-	return (
-		<button type={type} value={value} onClick={handleClick}>
-			{value}
-		</button>
-	);
-};
 // RADIO BUTTON
-type radioButtonGroup = {
-	type: "button" | "checkbox" | "radio";
-	radioButtonGroupName: string;
-	data: mockDataCharacterSet;
-};
-type radioButton = Omit<radioButtonGroup, "data"> & {
-	id: string;
-	value: string;
-	onSelect: (selectedInput: string) => void;
-};
-
-const RadioButtonGroup: FC<radioButtonGroup> = ({
-	type,
-	radioButtonGroupName,
-	data,
-}) => {
-	const [selected, setSelected] = useState("");
-
-	const handleSelect = (selectedInput: string) => {
-		setSelected(selectedInput);
-	};
-
-	return (
-		<>
-			{data.map(({ id, name }: mockDataCharacter) => {
-				return (
-					<RadioButton
-						key={id}
-						type={type}
-						id={id}
-						radioButtonGroupName={radioButtonGroupName}
-						value={name}
-						onSelect={handleSelect}
-					/>
-				);
-			})}
-			{selected && <div>FavChar: {selected}</div>}
-		</>
-	);
-};
-
-const RadioButton: FC<radioButton> = ({
-	type,
-	id,
-	radioButtonGroupName,
-	value,
-	onSelect,
-}) => {
-	const [isChecked, setSelect] = useState(false);
-	const [targetValue, setTargetValue] = useState("");
-
-	const selectValue = () => {
-		if (targetValue) onSelect(targetValue);
-	};
-	useEffect(selectValue, [isChecked, targetValue]);
-
-	const handleSelect = (e: ChangeEvent<HTMLInputElement>) => {
-		setTargetValue(e.currentTarget.value);
-		setSelect(!isChecked);
-		setSelect(!isChecked);
-	};
-	return (
-		<div className="answer">
-			<input
-				type={type}
-				id={id}
-				name={radioButtonGroupName}
-				value={value}
-				onChange={handleSelect}
-			/>
-			<label htmlFor={id}> {value} </label>
-		</div>
-	);
-};
 // CHECKBOX
 // DROPDOWN
 

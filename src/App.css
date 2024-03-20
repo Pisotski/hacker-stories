@@ -66,10 +66,12 @@ body {
 
 .practice-reusable-components-p96 {
 	display: flex;
-	width: 100vw;
+	width: 50vw;
 	flex-flow: column;
 	align-items: start;
+	margin: 3% 10%;
 }
+
 .answer {
 	font-size: x-large;
 	color: bisque;
