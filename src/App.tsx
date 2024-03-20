@@ -1,8 +1,8 @@
 import { FC, useState, useEffect, ChangeEvent } from "react";
 import "./App.css";
-import { data, mockDataCharacterSet } from "./data";
+import { data } from "./data";
 import { getRandomIntInclusive } from "./helpers";
-import { RadioButtonGroup } from "./reusable_components/RadioButtonGroup";
+import { InputGroup } from "./reusable_components/InputGroup";
 import { Button } from "./reusable_components/Button";
 
 interface Header {
@@ -93,15 +93,15 @@ const App: FC = () => {
 					className="practice-reusable-components-p96"
 					key={getRandomIntInclusive(0, 1000)}
 				>
-					<RadioButtonGroup
+					<InputGroup
 						type="radio"
-						radioButtonGroupName={"selected-answer-" + index}
+						inputGroupName={"selected-answer-" + index}
 						data={mockDataCharacterSet}
 					/>
 					<Button initialValue="Like" type="button" />
 				</div>
 			))}
-			<RadioButtonGroup type="checkbox" data={data[0]} />
+			<InputGroup type="checkbox" data={data[0]} />
 		</div>
 	);
 };
@@ -160,13 +160,5 @@ const PreventTouchEnd: FC = () => {
 		</button>
 	);
 };
-
-// ************************
-// P96: REUSABLE COMPONENTS
-// ************************
-
-// RADIO BUTTON
-// CHECKBOX
-// DROPDOWN
 
 export { App };

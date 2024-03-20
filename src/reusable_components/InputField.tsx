@@ -1,16 +1,16 @@
 import { FC, useState, useEffect, ChangeEvent } from "react";
-import { radioButtonGroup } from "./RadioButtonGroup";
+import { inputGroup } from "./InputGroup";
 
-type radioButton = Omit<radioButtonGroup, "data"> & {
+type input = Omit<inputGroup, "data"> & {
 	id: string;
 	value: string;
 	onSelect: (selectedInput: string) => void;
 };
 
-const RadioButton: FC<radioButton> = ({
+const InputField: FC<input> = ({
 	type,
 	id,
-	radioButtonGroupName,
+	inputGroupName,
 	value,
 	onSelect,
 }) => {
@@ -32,7 +32,7 @@ const RadioButton: FC<radioButton> = ({
 			<input
 				type={type}
 				id={id}
-				name={radioButtonGroupName}
+				name={inputGroupName}
 				value={value}
 				onChange={handleSelect}
 			/>
@@ -41,4 +41,4 @@ const RadioButton: FC<radioButton> = ({
 	);
 };
 
-export { RadioButton };
+export { InputField };

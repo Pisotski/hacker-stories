@@ -1,18 +1,14 @@
 import { FC, useState } from "react";
 import { mockDataCharacterSet, mockDataCharacter } from "../data";
-import { RadioButton } from "./RadioButton";
+import { InputField } from "./InputField";
 
-export type radioButtonGroup = {
+export type inputGroup = {
 	type: "button" | "checkbox" | "radio";
-	radioButtonGroupName?: string;
+	inputGroupName?: string;
 	data: mockDataCharacterSet;
 };
 
-const RadioButtonGroup: FC<radioButtonGroup> = ({
-	type,
-	radioButtonGroupName,
-	data,
-}) => {
+const InputGroup: FC<inputGroup> = ({ type, inputGroupName, data }) => {
 	const [selected, setSelected] = useState("");
 
 	const handleSelect = (selectedInput: string) => {
@@ -23,11 +19,11 @@ const RadioButtonGroup: FC<radioButtonGroup> = ({
 		<>
 			{data.map(({ id, name }: mockDataCharacter) => {
 				return (
-					<RadioButton
+					<InputField
 						key={id}
 						type={type}
 						id={id}
-						radioButtonGroupName={radioButtonGroupName}
+						inputGroupName={inputGroupName}
 						value={name}
 						onSelect={handleSelect}
 					/>
@@ -38,4 +34,4 @@ const RadioButtonGroup: FC<radioButtonGroup> = ({
 	);
 };
 
-export { RadioButtonGroup };
+export { InputGroup };
