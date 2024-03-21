@@ -1,9 +1,18 @@
-import { FC, useState, useEffect, ChangeEvent } from "react";
+import { FC, useState, useEffect, ChangeEvent, ReactNode } from "react";
 import "./App.css";
 import { List } from "./components/list/List";
 import { ReusableComponentsP96 } from "./practice/reusable_components/ReusableComponentsP96";
 import { stories } from "./data";
 import { InputWithLabel } from "./components/InputWithLabel";
+
+export type inputWithLabelProps = {
+	id: string;
+	label: string;
+	value: string;
+	type?: string;
+	children: ReactNode | string;
+	onInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
+};
 
 const userStorageState = (key: string, initialState: string) => {
 	const [value, setValue] = useState(localStorage.getItem(key) ?? initialState);

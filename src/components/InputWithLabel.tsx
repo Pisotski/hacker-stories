@@ -1,17 +1,9 @@
-import { FC, ChangeEvent } from "react";
-
+import { FC, ReactNode, ChangeEvent } from "react";
+import { inputWithLabelProps } from "../App";
 interface Header {
 	title: string;
 	greeting: string;
 }
-
-type inputWithLabelProps = {
-	id: string;
-	label: string;
-	value: string;
-	type?: string;
-	onInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
-};
 
 const welcome: Header = {
 	title: "the Road to React",
