@@ -1,0 +1,17 @@
+:root {
+	--slider-color: Coral;
+	--pointer-color: Coral;
+}
+
+.bar {
+	height: 6px;
+	background: var(--slider-color);
+	width: 50%;
+	border-radius: 70%;
+}
+.pointer {
+	height: 20px;
+	width: 20px;
+	border-radius: 50%;
+	background: var(--pointer-color);
+}
