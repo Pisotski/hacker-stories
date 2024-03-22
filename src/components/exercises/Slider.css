@@ -1,17 +1,21 @@
 :root {
-	--slider-color: Coral;
-	--pointer-color: Coral;
+	--slider-color: rgb(241, 145, 109);
+	--thumb-color: Coral;
 }
 
-.bar {
-	height: 6px;
-	background: var(--slider-color);
-	width: 50%;
-	border-radius: 70%;
+.thumb {
+	position: relative;
+	height: 25px;
+	background: var(--thumb-color);
+	width: 10px;
+	border-radius: 3px;
+	top: -5px;
+	cursor: pointer;
 }
-.pointer {
-	height: 20px;
-	width: 20px;
-	border-radius: 50%;
-	background: var(--pointer-color);
+.slider {
+	position: relative;
+	height: 10px;
+	border-radius: 3px;
+	background: var(--slider-color);
+	opacity: 0.6;
 }

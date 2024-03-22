@@ -1,34 +1,57 @@
 import "./Slider.css";
 import { useState, useEffect, useRef } from "react";
+
+const getPercentage = (current, max) => (100 * current) / max;
+
+const getLeft = (percentage) => `calc(${percentage}% - 5px)`;
+
 const Slider = () => {
-	const [currentMousePosition, setCurrentMousePosition] = useState(100);
+	const thumbRef = useRef();
+	const sliderRef = useRef();
+	const diff = useRef();
 
-	const pointer = useRef();
-	const bar = useRef();
+	const handleMouseMove = (event) => {
+		let newX =
+			event.clientX -
+			diff.current -
+			sliderRef.current.getBoundingClientRect().left;
 
-	function handleOnMouseDown(event) {
-		setCurrentMousePosition(event.clientX);
-	}
-	useEffect(() => {
-		const { x } = bar.current.getBoundingClientRect();
-		setCurrentMousePosition(x);
-	}, []);
+		const end = sliderRef.current.offsetWidth - thumbRef.current.offsetWidth;
 
-	useEffect(() => {
-		console.log();
-		pointer.current.style.position = "absolute";
-		pointer.current.style.transform = `translateX(${
-			currentMousePosition - 5
-		}px)`;
-	}, [currentMousePosition]);
+		const start = 0;
+
+		if (newX < start) {
+			newX = 0;
+		}
+
+		if (newX > end) {
+			newX = end;
+		}
+
+		const newPercentage = getPercentage(newX, end);
+
+		thumbRef.current.style.left = getLeft(newPercentage);
+	};
+	const handleOnMouseUp = () => {
+		document.removeEventListener("mouseup", handleOnMouseUp);
+		document.removeEventListener("mousemove", handleMouseMove);
+	};
+
+	const handleOnMouseDown = (event) => {
+		diff.current =
+			event.clientX - thumbRef.current.getBoundingClientRect().left;
+
+		document.addEventListener("mousemove", handleMouseMove);
+		document.addEventListener("mouseup", handleOnMouseUp);
+	};
 
 	return (
 		<>
-			<div ref={bar} className="bar" onDrag={handleOnMouseDown}>
+			<div ref={sliderRef} className="slider" onMouseDown={handleOnMouseDown}>
 				<div
-					ref={pointer}
+					ref={thumbRef}
 					onMouseDown={handleOnMouseDown}
-					className="pointer"
+					className="thumb"
 				></div>
 			</div>
 		</>
