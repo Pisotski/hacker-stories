@@ -1,9 +1,5 @@
-import "./Slider.css";
 import { useRef } from "react";
-
-const getPercentage = (current: number, max: number) => (100 * current) / max;
-
-const getLeft = (percentage: number) => `calc(${percentage}% - 5px)`;
+import { getPercentage, getLeft } from "./Slider";
 
 const Slider = () => {
 	const thumbRef = useRef<HTMLDivElement>(null);
@@ -41,7 +37,7 @@ const Slider = () => {
 	};
 
 	const handleMouseDown = (event: MouseEvent) => {
-		if (thumbRef.current) {
+		if (thumbRef.current && diff.current && sliderRef.current) {
 			diff.current =
 				event.clientX - thumbRef.current.getBoundingClientRect().left;
 
@@ -62,5 +58,3 @@ const Slider = () => {
 		</>
 	);
 };
-
-export { Slider };
