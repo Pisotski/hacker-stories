@@ -1,5 +1,6 @@
 import { FC } from "react";
 import { inputWithLabelProps } from "../App";
+
 interface Header {
 	title: string;
 	greeting: string;
@@ -19,12 +20,14 @@ const InputWithLabel: FC<inputWithLabelProps> = ({
 }) => {
 	return (
 		<>
-			<h1>
-				{welcome.title}: {welcome.greeting}
-			</h1>
-			<label htmlFor={id}>{label}</label>
-			<input id={id} type={type} value={value} onChange={onInputChange} />
-			<p>{value}</p>
+			<div>
+				<h1>
+					{welcome.title}: {welcome.greeting}
+				</h1>
+				<label htmlFor={id}>{label}</label>
+				<input id={id} type={type} value={value} onChange={onInputChange} />
+				<p>{value}</p>
+			</div>
 		</>
 	);
 };

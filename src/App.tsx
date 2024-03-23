@@ -2,7 +2,7 @@ import { FC, useState, useEffect, ChangeEvent, ReactNode } from "react";
 import "./App.css";
 import { List } from "./components/list/List";
 import { ReusableComponentsP96 } from "./components/exercises/reusable_components/ReusableComponentsP96";
-import { stories } from "./data";
+import { dataStories } from "./data";
 import { InputWithLabel } from "./components/InputWithLabel";
 import { Slider } from "./components/exercises/Slider";
 
@@ -25,6 +25,7 @@ const userStorageState = (key: string, initialState: string) => {
 
 const App: FC = () => {
 	const [searchTerm, setSearchTerm] = userStorageState("search", "React");
+	const [stories, setStories] = useState(dataStories);
 
 	const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
 		const { value } = e.target;
@@ -46,7 +47,7 @@ const App: FC = () => {
 				Search:
 			</InputWithLabel>
 			<hr />
-			<List list={searchedStories} />
+			<List list={searchedStories} setStories={setStories} />
 			<Slider />
 
 			<ReusableComponentsP96 />

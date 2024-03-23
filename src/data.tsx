@@ -33,7 +33,7 @@ export interface Story {
 	objectID: number;
 }
 
-export const stories: Story[] = [
+export const dataStories: Story[] = [
 	{
 		title: "React",
 		url: "https://reactjs.org/",

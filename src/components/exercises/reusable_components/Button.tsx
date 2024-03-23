@@ -6,10 +6,11 @@ type button = {
 		trueValue: string;
 		falseValue?: string;
 	};
+	onClick?: () => void;
 };
 // BUTTON
 
-const Button: FC<button> = ({ type, values }) => {
+const Button: FC<button> = ({ type, values, onClick }) => {
 	const [toggle, setToggle] = useState(true);
 	const [value, setValue] = useState(values.trueValue);
 
@@ -23,6 +24,7 @@ const Button: FC<button> = ({ type, values }) => {
 
 	const handleClick = () => {
 		setToggle(!toggle);
+		if (onClick) onClick();
 	};
 
 	return (
