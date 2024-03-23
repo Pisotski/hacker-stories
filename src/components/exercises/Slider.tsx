@@ -8,10 +8,10 @@ const getLeft = (percentage: number) => `calc(${percentage}% - 5px)`;
 const Slider = () => {
 	const thumbRef = useRef<HTMLDivElement>(null);
 	const sliderRef = useRef<HTMLDivElement>(null);
-	const diff = useRef<number>();
+	const diff = useRef<number | null>(null);
 
 	const handleMouseMove = (event: MouseEvent) => {
-		if (diff.current && sliderRef.current && thumbRef.current) {
+		if (thumbRef.current && diff.current && sliderRef.current) {
 			let newX =
 				event.clientX -
 				diff.current -
@@ -34,28 +34,29 @@ const Slider = () => {
 			thumbRef.current.style.left = getLeft(newPercentage);
 		}
 	};
-	const handleOnMouseUp = () => {
-		document.removeEventListener("mouseup", handleOnMouseUp);
+
+	const handleMouseUp = () => {
+		document.removeEventListener("mouseup", handleMouseUp);
 		document.removeEventListener("mousemove", handleMouseMove);
 	};
 
-	const handleOnMouseDown = (event: MouseEvent) => {
-		if (diff.current && thumbRef.current) {
+	const handleMouseDown = (event: MouseEvent) => {
+		if (thumbRef.current && diff.current && sliderRef.current) {
 			diff.current =
 				event.clientX - thumbRef.current.getBoundingClientRect().left;
 
 			document.addEventListener("mousemove", handleMouseMove);
-			document.addEventListener("mouseup", handleOnMouseUp);
+			document.addEventListener("mouseup", handleMouseUp);
 		}
 	};
 
 	return (
 		<>
-			<div ref={sliderRef} className="slider" onMouseDown={handleOnMouseDown}>
+			<div ref={sliderRef} className="slider" onMouseDown={handleMouseDown}>
 				<div
 					ref={thumbRef}
-					onMouseDown={handleOnMouseDown}
 					className="thumb"
+					onMouseDown={handleMouseDown}
 				></div>
 			</div>
 		</>
