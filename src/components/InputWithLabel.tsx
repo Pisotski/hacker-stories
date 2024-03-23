@@ -1,4 +1,4 @@
-import { FC, ReactNode, ChangeEvent } from "react";
+import { FC } from "react";
 import { inputWithLabelProps } from "../App";
 interface Header {
 	title: string;

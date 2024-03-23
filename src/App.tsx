@@ -1,9 +1,10 @@
 import { FC, useState, useEffect, ChangeEvent, ReactNode } from "react";
 import "./App.css";
 import { List } from "./components/list/List";
-import { ReusableComponentsP96 } from "./practice/reusable_components/ReusableComponentsP96";
+import { ReusableComponentsP96 } from "./components/exercises/reusable_components/ReusableComponentsP96";
 import { stories } from "./data";
 import { InputWithLabel } from "./components/InputWithLabel";
+import { Slider } from "./components/exercises/Slider";
 
 export type inputWithLabelProps = {
 	id: string;
@@ -46,6 +47,8 @@ const App: FC = () => {
 			</InputWithLabel>
 			<hr />
 			<List list={searchedStories} />
+			<Slider />
+
 			<ReusableComponentsP96 />
 		</div>
 	);
