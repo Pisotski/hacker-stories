@@ -1,27 +1,16 @@
 import { FC, Fragment } from "react";
 import { Item } from "./Item";
 import { Story } from "../../data";
-import { Button } from "../exercises/reusable_components/Button";
 
 interface ListProps {
 	list: Story[];
-	setStories: (filteredStories: Story[]) => void;
+	handleRemoveItem: (storyTitle: string) => void;
 }
-const List: FC<ListProps> = ({ list, setStories }) => (
+const List: FC<ListProps> = ({ list, handleRemoveItem }) => (
 	<div>
-		{list.map(({ objectID, ...item }) => (
-			<Fragment key={objectID}>
-				<Item {...item} />
-				<Button
-					type="button"
-					values={{ trueValue: "x" }}
-					onClick={() => {
-						const filteredStories = list.filter(
-							(story) => story.title !== item.title
-						);
-						setStories(filteredStories);
-					}}
-				></Button>
+		{list.map((item: Story) => (
+			<Fragment key={item.objectID}>
+				<Item item={item} handleRemoveItem={handleRemoveItem} />
 			</Fragment>
 		))}
 	</div>

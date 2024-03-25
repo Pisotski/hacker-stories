@@ -2,7 +2,7 @@ import { FC, useState, useEffect, ChangeEvent, ReactNode } from "react";
 import "./App.css";
 import { List } from "./components/list/List";
 import { ReusableComponentsP96 } from "./components/exercises/reusable_components/ReusableComponentsP96";
-import { dataStories } from "./data";
+import { dataStories, Story } from "./data";
 import { InputWithLabel } from "./components/InputWithLabel";
 import { Slider } from "./components/exercises/Slider";
 
@@ -32,6 +32,11 @@ const App: FC = () => {
 		setSearchTerm(value);
 	};
 
+	const handleRemoveItem = (storyTitle: string) => {
+		const newStories = stories.filter((story) => story.title !== storyTitle);
+		setStories(newStories);
+	};
+
 	const searchedStories = stories.filter((story) =>
 		story.title.toLowerCase().includes(searchTerm.toLowerCase())
 	);
@@ -47,7 +52,7 @@ const App: FC = () => {
 				Search:
 			</InputWithLabel>
 			<hr />
-			<List list={searchedStories} setStories={setStories} />
+			<List list={searchedStories} handleRemoveItem={handleRemoveItem} />
 			<Slider />
 
 			<ReusableComponentsP96 />
