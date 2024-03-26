@@ -24,23 +24,23 @@ const superPeople: mockDataCharacterSet = [
 	{ id: "33", name: "Chris Bumstead" },
 ];
 
-export interface Story {
-	title: string;
+export type Story = {
+	objectID: string;
 	url: string;
+	title: string;
 	author: string;
 	num_comments: number;
 	points: number;
-	objectID: number;
-}
+};
 
-export const storiesDB: Story[] = [
+export const mockStories: Story[] = [
 	{
 		title: "React",
 		url: "https://reactjs.org/",
 		author: "Jordan Walke",
 		num_comments: 3,
 		points: 4,
-		objectID: 0,
+		objectID: "0",
 	},
 	{
 		title: "Redux",
@@ -48,23 +48,21 @@ export const storiesDB: Story[] = [
 		author: "Dan Abramov, Andrew Clark",
 		num_comments: 2,
 		points: 5,
-		objectID: 1,
+		objectID: "1",
 	},
 ];
 
 export const getData = (): Promise<{ data: { initialStories: Story[] } }> => {
 	return new Promise((resolve) =>
 		setTimeout(() => {
-			resolve({ data: { initialStories: storiesDB } });
+			resolve({ data: { initialStories: mockStories } });
 		}, 200)
 	);
 };
 
-export const getAsyncStories = async () => {
+export const getAsyncStories = async (API_ENDPOINT: string) => {
 	try {
-		const response = await fetch(
-			"https://hn.algolia.com/api/v1/search?query=React"
-		);
+		const response = await fetch(`${API_ENDPOINT}`);
 		const data = await response.json();
 		return data;
 	} catch (error) {

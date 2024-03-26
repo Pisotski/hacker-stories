@@ -1,5 +1,4 @@
-import { FC } from "react";
-import { inputWithLabelProps } from "../App";
+import { FC, ReactNode, ChangeEvent } from "react";
 
 interface Header {
 	title: string;
@@ -9,6 +8,16 @@ interface Header {
 const welcome: Header = {
 	title: "the Road to React",
 	greeting: "Hello, Friend",
+};
+
+export type inputWithLabelProps = {
+	id: string;
+	label: string;
+	value: string;
+	type?: string;
+	children: ReactNode | string;
+	isFocused: boolean;
+	onInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
 };
 
 const InputWithLabel: FC<inputWithLabelProps> = ({

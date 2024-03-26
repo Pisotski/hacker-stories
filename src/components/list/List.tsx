@@ -4,13 +4,13 @@ import { Story } from "../../data";
 
 interface ListProps {
 	list: Story[];
-	handleRemoveItem: (item: Story) => void;
+	onRemoveItem: (item: Story) => void;
 }
-const List: FC<ListProps> = ({ list, handleRemoveItem }) => (
+const List: FC<ListProps> = ({ list, onRemoveItem }) => (
 	<div>
 		{list.map((item: Story) => (
 			<Fragment key={item.objectID}>
-				<Item item={item} handleRemoveItem={handleRemoveItem} />
+				<Item item={item} onRemoveItem={onRemoveItem} />
 			</Fragment>
 		))}
 	</div>

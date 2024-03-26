@@ -1,26 +1,10 @@
-import {
-	useState,
-	useEffect,
-	useReducer,
-	FC,
-	ChangeEvent,
-	ReactNode,
-} from "react";
+import { useState, useEffect, useReducer, FC, ChangeEvent } from "react";
 import "./App.css";
 import { List } from "./components/list/List";
 import { ReusableComponentsP96 } from "./components/exercises/reusable_components/ReusableComponentsP96";
 import { getAsyncStories, Story } from "./data";
 import { InputWithLabel } from "./components/InputWithLabel";
 import { Slider } from "./components/exercises/Slider";
-
-export type inputWithLabelProps = {
-	id: string;
-	label: string;
-	value: string;
-	type?: string;
-	children: ReactNode | string;
-	onInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
-};
 
 const userStorageState = (key: string, initialState: string) => {
 	const [value, setValue] = useState(localStorage.getItem(key) ?? initialState);
@@ -29,6 +13,8 @@ const userStorageState = (key: string, initialState: string) => {
 	}, [value, key]);
 	return [value, setValue] as const;
 };
+
+type Stories = Story[];
 
 enum ActionType {
 	STORIES_FETCH_INIT = "STORIES_FETCH_INIT",
@@ -39,7 +25,7 @@ enum ActionType {
 
 type StoriesFetchSuccessAction = {
 	type: "STORIES_FETCH_SUCCESS";
-	payload: Story[];
+	payload: Stories;
 };
 
 type StoriesRemoveAction = {
@@ -49,18 +35,16 @@ type StoriesRemoveAction = {
 
 type StoriesFetchInitAction = {
 	type: "STORIES_FETCH_INIT";
-	payload?: null;
 };
 
 type StoriesFetchFailureAction = {
 	type: "STORIES_FETCH_FAILURE";
-	payload?: null;
 };
 
 type StoriesState = {
+	data: Stories;
 	isLoading: boolean;
 	isError: boolean;
-	data: Story[];
 };
 
 type StoriesAction =
@@ -69,11 +53,8 @@ type StoriesAction =
 	| StoriesFetchInitAction
 	| StoriesFetchFailureAction;
 
-const storiesReducer = (
-	state: StoriesState,
-	{ type, payload }: StoriesAction
-) => {
-	switch (type) {
+const storiesReducer = (state: StoriesState, action: StoriesAction) => {
+	switch (action.type) {
 		case ActionType.STORIES_FETCH_INIT:
 			return {
 				...state,
@@ -86,7 +67,7 @@ const storiesReducer = (
 				...state,
 				isLoading: false,
 				isError: false,
-				data: payload,
+				data: action.payload,
 			};
 
 		case ActionType.STORIES_FETCH_FAILURE:
@@ -98,7 +79,7 @@ const storiesReducer = (
 
 		case ActionType.REMOVE_STORY:
 			const newStories = state.data.filter(
-				(story: Story) => payload.objectID !== story.objectID
+				(story: Story) => action.payload.objectID !== story.objectID
 			);
 			return { ...state, data: newStories };
 		default:
@@ -108,16 +89,19 @@ const storiesReducer = (
 const App: FC = () => {
 	const [searchTerm, setSearchTerm] = userStorageState("search", "React");
 	const [stories, dispatchStories] = useReducer(storiesReducer, {
-		isLoading: true,
-		isError: false,
 		data: [],
+		isLoading: false,
+		isError: false,
 	});
 
 	useEffect(() => {
+		if (!searchTerm) return;
 		dispatchStories({
 			type: ActionType.STORIES_FETCH_INIT,
 		});
-		getAsyncStories()
+
+		const API_ENDPOINT = `https://hn.algolia.com/api/v1/search?query=${searchTerm}`;
+		getAsyncStories(API_ENDPOINT)
 			.then((result) => {
 				dispatchStories({
 					type: ActionType.STORIES_FETCH_SUCCESS,
@@ -129,12 +113,7 @@ const App: FC = () => {
 					type: ActionType.STORIES_FETCH_FAILURE,
 				})
 			);
-	}, []);
-
-	const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
-		const { value } = e.target;
-		setSearchTerm(value);
-	};
+	}, [searchTerm]);
 
 	const handleRemoveItem = (item: Story) => {
 		dispatchStories({
@@ -143,9 +122,10 @@ const App: FC = () => {
 		});
 	};
 
-	const searchedStories = stories.data.filter((story: Story) =>
-		story.title.toLowerCase().includes(searchTerm.toLowerCase())
-	);
+	const handleSearch = async (e: ChangeEvent<HTMLInputElement>) => {
+		const { value } = e.target;
+		setSearchTerm(value);
+	};
 
 	return (
 		<div className="top-wrapper">
@@ -153,17 +133,20 @@ const App: FC = () => {
 				id="search"
 				label="Search"
 				value={searchTerm}
+				isFocused
 				onInputChange={handleSearch}
 			>
-				Search:
+				<strong>Search:</strong>
 			</InputWithLabel>
+
 			<hr />
+
 			{stories.isError && <p>Something went wrong ...</p>}
 
 			{stories.isLoading ? (
-				<div>Loading</div>
+				<p>Loading</p>
 			) : (
-				<List list={searchedStories} handleRemoveItem={handleRemoveItem} />
+				<List list={stories.data} onRemoveItem={handleRemoveItem} />
 			)}
 			<Slider />
 			<ReusableComponentsP96 />
