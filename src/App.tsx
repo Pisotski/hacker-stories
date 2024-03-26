@@ -31,15 +31,15 @@ const userStorageState = (key: string, initialState: string) => {
 };
 
 enum ActionType {
+	IS_LOADING = "IS_LOADING",
 	SET_STORIES = "SET_STORIES",
 	REMOVE_STORY = "REMOVE_STORY",
+	IS_ERROR = "IS_ERROR",
 }
-
-type StoriesState = Story[];
 
 type StoriesSetAction = {
 	type: "SET_STORIES";
-	payload: StoriesState;
+	payload: Story[];
 };
 
 type StoriesRemoveAction = {
@@ -47,42 +47,88 @@ type StoriesRemoveAction = {
 	payload: Story;
 };
 
-type StoriesAction = StoriesSetAction | StoriesRemoveAction;
+type StoriesIsLoadingAction = {
+	type: "IS_LOADING";
+	payload: boolean;
+};
+
+type StoriesIsErrorAction = {
+	type: "IS_ERROR";
+	payload: boolean;
+};
+
+type StoriesState = {
+	isLoading: boolean;
+	isError: boolean;
+	stories: Story[];
+};
+
+type StoriesAction =
+	| StoriesSetAction
+	| StoriesRemoveAction
+	| StoriesIsLoadingAction
+	| StoriesIsErrorAction;
 
 const storiesReducer = (
 	state: StoriesState,
 	{ type, payload }: StoriesAction
 ) => {
+	console.log(state);
 	switch (type) {
 		case ActionType.SET_STORIES:
-			return payload;
+			return { ...state, stories: payload };
 		case ActionType.REMOVE_STORY:
-			const newStories = state.filter(
+			const newStories = state.stories.filter(
 				(story: Story) => payload.objectID !== story.objectID
 			);
-			return newStories;
+			return { ...state, stories: newStories };
+		case ActionType.IS_LOADING:
+			return {
+				...state,
+				isLoading: payload,
+			};
+		case ActionType.IS_ERROR:
+			return {
+				...state,
+				isError: payload,
+			};
 		default:
 			throw new Error();
 	}
 };
 const App: FC = () => {
 	const [searchTerm, setSearchTerm] = userStorageState("search", "React");
-	const [stories, dispatchStories] = useReducer(storiesReducer, []);
-
-	const [isLoading, setIsLoading] = useState(false);
-	const [isError, setIsError] = useState(false);
+	const [{ isLoading, isError, stories }, dispatchStories] = useReducer(
+		storiesReducer,
+		{
+			isLoading: true,
+			isError: false,
+			stories: [],
+		}
+	);
 
 	useEffect(() => {
-		setIsLoading(true);
+		dispatchStories({
+			type: ActionType.IS_LOADING,
+			payload: true,
+		});
 		getData()
 			.then((result) => {
 				dispatchStories({
 					type: ActionType.SET_STORIES,
 					payload: result.data.initialStories,
 				});
-				setIsLoading(false);
+				dispatchStories({
+					type: ActionType.IS_LOADING,
+					payload: false,
+				});
 			})
-			.catch(() => setIsError(true));
+			.catch(() =>
+				dispatchStories({
+					type: ActionType.IS_ERROR,
+					payload: true,
+				})
+			);
 	}, []);
 
 	const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
