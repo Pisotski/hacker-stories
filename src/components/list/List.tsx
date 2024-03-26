@@ -4,7 +4,7 @@ import { Story } from "../../data";
 
 interface ListProps {
 	list: Story[];
-	handleRemoveItem: (storyTitle: string) => void;
+	handleRemoveItem: (item: Story) => void;
 }
 const List: FC<ListProps> = ({ list, handleRemoveItem }) => (
 	<div>

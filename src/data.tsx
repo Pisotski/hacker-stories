@@ -33,7 +33,7 @@ export interface Story {
 	objectID: number;
 }
 
-export const dataStories: Story[] = [
+export const stories: Story[] = [
 	{
 		title: "React",
 		url: "https://reactjs.org/",
@@ -51,5 +51,13 @@ export const dataStories: Story[] = [
 		objectID: 1,
 	},
 ];
+
+export const getData = (): Promise<{ data: { initialStories: Story[] } }> => {
+	return new Promise((resolve) =>
+		setTimeout(() => {
+			resolve({ data: { initialStories: stories } });
+		}, 200)
+	);
+};
 
 export const data = [superHeroes, superVillains, superPeople];

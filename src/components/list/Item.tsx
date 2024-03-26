@@ -4,12 +4,11 @@ import { Button } from "../exercises/reusable_components/Button";
 
 type ItemProps = {
 	item: Story;
-	handleRemoveItem: (title: string) => void;
+	handleRemoveItem: (item: Story) => void;
 };
 // The application renders a list of items and allows
 // its users to filter the list via a search feature.
 const Item: FC<ItemProps> = ({ item, handleRemoveItem }) => {
-	console.log(item);
 	const { url, title, author, num_comments, points } = item;
 
 	return (
@@ -19,7 +18,7 @@ const Item: FC<ItemProps> = ({ item, handleRemoveItem }) => {
 					<Button
 						type="button"
 						values={{ trueValue: "x" }}
-						onClick={() => handleRemoveItem(title)}
+						onClick={() => handleRemoveItem(item)}
 					/>
 				</span>
 				<a href={url}>{title}</a>
