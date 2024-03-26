@@ -9,7 +9,7 @@ import {
 import "./App.css";
 import { List } from "./components/list/List";
 import { ReusableComponentsP96 } from "./components/exercises/reusable_components/ReusableComponentsP96";
-import { getData, Story } from "./data";
+import { getAsyncStories, Story } from "./data";
 import { InputWithLabel } from "./components/InputWithLabel";
 import { Slider } from "./components/exercises/Slider";
 
@@ -31,14 +31,14 @@ const userStorageState = (key: string, initialState: string) => {
 };
 
 enum ActionType {
-	IS_LOADING = "IS_LOADING",
-	SET_STORIES = "SET_STORIES",
+	STORIES_FETCH_INIT = "STORIES_FETCH_INIT",
+	STORIES_FETCH_SUCCESS = "STORIES_FETCH_SUCCESS",
 	REMOVE_STORY = "REMOVE_STORY",
-	IS_ERROR = "IS_ERROR",
+	STORIES_FETCH_FAILURE = "STORIES_FETCH_FAILURE",
 }
 
-type StoriesSetAction = {
-	type: "SET_STORIES";
+type StoriesFetchSuccessAction = {
+	type: "STORIES_FETCH_SUCCESS";
 	payload: Story[];
 };
 
@@ -47,86 +47,86 @@ type StoriesRemoveAction = {
 	payload: Story;
 };
 
-type StoriesIsLoadingAction = {
-	type: "IS_LOADING";
-	payload: boolean;
+type StoriesFetchInitAction = {
+	type: "STORIES_FETCH_INIT";
+	payload?: null;
 };
 
-type StoriesIsErrorAction = {
-	type: "IS_ERROR";
-	payload: boolean;
+type StoriesFetchFailureAction = {
+	type: "STORIES_FETCH_FAILURE";
+	payload?: null;
 };
 
 type StoriesState = {
 	isLoading: boolean;
 	isError: boolean;
-	stories: Story[];
+	data: Story[];
 };
 
 type StoriesAction =
-	| StoriesSetAction
+	| StoriesFetchSuccessAction
 	| StoriesRemoveAction
-	| StoriesIsLoadingAction
-	| StoriesIsErrorAction;
+	| StoriesFetchInitAction
+	| StoriesFetchFailureAction;
 
 const storiesReducer = (
 	state: StoriesState,
 	{ type, payload }: StoriesAction
 ) => {
-	console.log(state);
 	switch (type) {
-		case ActionType.SET_STORIES:
-			return { ...state, stories: payload };
+		case ActionType.STORIES_FETCH_INIT:
+			return {
+				...state,
+				isLoading: true,
+				isError: false,
+			};
+
+		case ActionType.STORIES_FETCH_SUCCESS:
+			return {
+				...state,
+				isLoading: false,
+				isError: false,
+				data: payload,
+			};
+
+		case ActionType.STORIES_FETCH_FAILURE:
+			return {
+				...state,
+				isLoading: false,
+				isError: true,
+			};
+
 		case ActionType.REMOVE_STORY:
-			const newStories = state.stories.filter(
+			const newStories = state.data.filter(
 				(story: Story) => payload.objectID !== story.objectID
 			);
-			return { ...state, stories: newStories };
-		case ActionType.IS_LOADING:
-			return {
-				...state,
-				isLoading: payload,
-			};
-		case ActionType.IS_ERROR:
-			return {
-				...state,
-				isError: payload,
-			};
+			return { ...state, data: newStories };
 		default:
 			throw new Error();
 	}
 };
 const App: FC = () => {
 	const [searchTerm, setSearchTerm] = userStorageState("search", "React");
-	const [{ isLoading, isError, stories }, dispatchStories] = useReducer(
-		storiesReducer,
-		{
-			isLoading: true,
-			isError: false,
-			stories: [],
-		}
-	);
+	const [stories, dispatchStories] = useReducer(storiesReducer, {
+		isLoading: true,
+		isError: false,
+		data: [],
+	});
 
 	useEffect(() => {
 		dispatchStories({
-			type: ActionType.IS_LOADING,
-			payload: true,
+			type: ActionType.STORIES_FETCH_INIT,
 		});
-		getData()
+		getAsyncStories()
 			.then((result) => {
 				dispatchStories({
-					type: ActionType.SET_STORIES,
-					payload: result.data.initialStories,
-				});
-				dispatchStories({
-					type: ActionType.IS_LOADING,
-					payload: false,
+					type: ActionType.STORIES_FETCH_SUCCESS,
+					payload: result.hits,
 				});
 			})
 			.catch(() =>
 				dispatchStories({
-					type: ActionType.IS_ERROR,
-					payload: true,
+					type: ActionType.STORIES_FETCH_FAILURE,
 				})
 			);
 	}, []);
@@ -143,7 +143,7 @@ const App: FC = () => {
 		});
 	};
 
-	const searchedStories = stories.filter((story: Story) =>
+	const searchedStories = stories.data.filter((story: Story) =>
 		story.title.toLowerCase().includes(searchTerm.toLowerCase())
 	);
 
@@ -158,9 +158,9 @@ const App: FC = () => {
 				Search:
 			</InputWithLabel>
 			<hr />
-			{isError && <p>Something went wrong ...</p>}
+			{stories.isError && <p>Something went wrong ...</p>}
 
-			{isLoading ? (
+			{stories.isLoading ? (
 				<div>Loading</div>
 			) : (
 				<List list={searchedStories} handleRemoveItem={handleRemoveItem} />

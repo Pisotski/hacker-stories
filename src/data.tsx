@@ -60,4 +60,16 @@ export const getData = (): Promise<{ data: { initialStories: Story[] } }> => {
 	);
 };
 
+export const getAsyncStories = async () => {
+	try {
+		const response = await fetch(
+			"https://hn.algolia.com/api/v1/search?query=React"
+		);
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		return error;
+	}
+};
+
 export const data = [superHeroes, superVillains, superPeople];
