@@ -60,14 +60,4 @@ export const getData = (): Promise<{ data: { initialStories: Story[] } }> => {
 	);
 };
 
-export const getAsyncStories = async (API_ENDPOINT: string) => {
-	try {
-		const response = await fetch(`${API_ENDPOINT}`);
-		const data = await response.json();
-		return data;
-	} catch (error) {
-		return error;
-	}
-};
-
 export const data = [superHeroes, superVillains, superPeople];

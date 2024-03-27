@@ -6,6 +6,7 @@ type button = {
 		trueValue: string;
 		falseValue?: string;
 	};
+	disabled: boolean;
 	onClick?: () => void;
 };
 // BUTTON

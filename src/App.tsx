@@ -6,12 +6,15 @@ import {
 	FC,
 	ChangeEvent,
 } from "react";
+import axios from "axios";
 import "./App.css";
 import { List } from "./components/list/List";
 import { ReusableComponentsP96 } from "./components/exercises/reusable_components/ReusableComponentsP96";
-import { getAsyncStories, Story } from "./data";
-import { InputWithLabel } from "./components/InputWithLabel";
+import { Story } from "./data";
+import { SearchForm } from "./components/Form/Form";
 import { Slider } from "./components/exercises/Slider";
+
+const API_ENDPOINT = `https://hn.algolia.com/api/v1/search?query=`;
 
 const userStorageState = (key: string, initialState: string) => {
 	const [value, setValue] = useState(localStorage.getItem(key) ?? initialState);
@@ -96,32 +99,28 @@ const storiesReducer = (state: StoriesState, action: StoriesAction) => {
 
 const App: FC = () => {
 	const [searchTerm, setSearchTerm] = userStorageState("search", "React");
+	const [url, setUrl] = useState(`${API_ENDPOINT}${searchTerm}`);
 	const [stories, dispatchStories] = useReducer(storiesReducer, {
 		data: [],
 		isLoading: false,
 		isError: false,
 	});
 
-	const handleFetchStories = useCallback(() => {
+	const handleFetchStories = useCallback(async () => {
 		if (!searchTerm) return;
 		dispatchStories({
 			type: ActionType.STORIES_FETCH_INIT,
 		});
-
-		const API_ENDPOINT = `https://hn.algolia.com/api/v1/search?query=${searchTerm}`;
-		getAsyncStories(API_ENDPOINT)
-			.then((result) => {
-				dispatchStories({
-					type: ActionType.STORIES_FETCH_SUCCESS,
-					payload: result.hits,
-				});
-			})
-			.catch(() =>
-				dispatchStories({
-					type: ActionType.STORIES_FETCH_FAILURE,
-				})
-			);
-	}, [searchTerm]);
+		try {
+			const result = await axios.get(url);
+			dispatchStories({
+				type: ActionType.STORIES_FETCH_SUCCESS,
+				payload: result.data.hits,
+			});
+		} catch {
+			dispatchStories({ type: ActionType.STORIES_FETCH_FAILURE });
+		}
+	}, [url]);
 
 	useEffect(() => {
 		handleFetchStories();
@@ -134,23 +133,22 @@ const App: FC = () => {
 		});
 	};
 
-	const handleSearch = async (e: ChangeEvent<HTMLInputElement>) => {
+	const handleSearchInput = (e: ChangeEvent<HTMLInputElement>) => {
 		const { value } = e.target;
 		setSearchTerm(value);
 	};
 
+	const handleSearchSubmit = () => {
+		setUrl(`${API_ENDPOINT}${searchTerm}`);
+	};
+
 	return (
 		<div className="top-wrapper">
-			<InputWithLabel
-				id="search"
-				label="Search"
-				value={searchTerm}
-				isFocused
-				onInputChange={handleSearch}
-			>
-				<strong>Search:</strong>
-			</InputWithLabel>
-
+			<SearchForm
+				searchTerm={searchTerm}
+				onSearchInput={handleSearchInput}
+				onSearchSubmit={handleSearchSubmit}
+			/>
 			<hr />
 
 			{stories.isError && <p>Something went wrong ...</p>}
