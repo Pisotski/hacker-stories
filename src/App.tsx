@@ -1,4 +1,11 @@
-import { useState, useEffect, useReducer, FC, ChangeEvent } from "react";
+import {
+	useState,
+	useEffect,
+	useReducer,
+	useCallback,
+	FC,
+	ChangeEvent,
+} from "react";
 import "./App.css";
 import { List } from "./components/list/List";
 import { ReusableComponentsP96 } from "./components/exercises/reusable_components/ReusableComponentsP96";
@@ -86,6 +93,7 @@ const storiesReducer = (state: StoriesState, action: StoriesAction) => {
 			throw new Error();
 	}
 };
+
 const App: FC = () => {
 	const [searchTerm, setSearchTerm] = userStorageState("search", "React");
 	const [stories, dispatchStories] = useReducer(storiesReducer, {
@@ -94,7 +102,7 @@ const App: FC = () => {
 		isError: false,
 	});
 
-	useEffect(() => {
+	const handleFetchStories = useCallback(() => {
 		if (!searchTerm) return;
 		dispatchStories({
 			type: ActionType.STORIES_FETCH_INIT,
@@ -114,6 +122,10 @@ const App: FC = () => {
 				})
 			);
 	}, [searchTerm]);
+
+	useEffect(() => {
+		handleFetchStories();
+	}, [handleFetchStories]);
 
 	const handleRemoveItem = (item: Story) => {
 		dispatchStories({
