@@ -4,7 +4,7 @@ import {
 	useReducer,
 	useCallback,
 	FC,
-	ChangeEvent,
+	FormEvent,
 } from "react";
 import axios from "axios";
 import "./App.css";
@@ -133,13 +133,14 @@ const App: FC = () => {
 		});
 	};
 
-	const handleSearchInput = (e: ChangeEvent<HTMLInputElement>) => {
-		const { value } = e.target;
+	const handleSearchInput = (e: FormEvent<HTMLInputElement>) => {
+		const { value } = e.currentTarget;
 		setSearchTerm(value);
 	};
 
-	const handleSearchSubmit = () => {
+	const handleSearchSubmit = (e: FormEvent) => {
 		setUrl(`${API_ENDPOINT}${searchTerm}`);
+		e.preventDefault();
 	};
 
 	return (

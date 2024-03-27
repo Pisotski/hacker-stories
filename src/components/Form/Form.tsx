@@ -1,10 +1,10 @@
 import { InputWithLabel } from "../InputWithLabel";
-import { FC, ChangeEvent } from "react";
+import { FC, FormEvent } from "react";
 
 type SearchFormProps = {
 	searchTerm: string;
-	onSearchInput: (e: ChangeEvent<HTMLInputElement>) => void;
-	onSearchSubmit: () => void;
+	onSearchInput: (e: FormEvent<HTMLInputElement>) => void;
+	onSearchSubmit: (e: FormEvent) => void;
 };
 
 const SearchForm: FC<SearchFormProps> = ({
